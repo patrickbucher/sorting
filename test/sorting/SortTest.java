@@ -9,7 +9,7 @@ public class SortTest {
     private final static int TEST_SIZE = 10_000;
 
     private final static int SIMPLE_BENCHMARKS[] = { 1_000, 2_000, 5_000, 10_000, 20_000, 50_000 };
-    private final static int HIGHER_BENCHMARKS[] = { 100_000, 200_000, 500_000, 1_000_000, 2_000_000, 5_000_000 };
+    private final static int HIGHER_BENCHMARKS[] = { 100_000, 200_000, 500_000, 1_000_000, 2_000_000, 5_000_000, 10_000_000, 20_000_000, 50_000_000 };
 
     private Integer[] numbers;
 
@@ -17,6 +17,7 @@ public class SortTest {
     private Sort<Integer> insertionSort;
     private Sort<Integer> selectionSort;
     private Sort<Integer> quickSort;
+    private Sort<Integer> quickSortMo3;
     private Sort<Integer> heapSort;
 
     @Before
@@ -26,6 +27,7 @@ public class SortTest {
         insertionSort = new InsertionSort<>();
         selectionSort = new SelectionSort<>();
         quickSort = new QuickSort<>();
+        quickSortMo3 = new QuickSortMedianOfThree<>();
         heapSort = new HeapSort<>();
     }
 
@@ -52,6 +54,12 @@ public class SortTest {
         quickSort.sort(numbers);
         Assert.assertTrue(SortUtils.sorted(numbers));
     }
+    
+    @Test
+    public void testQuickSortMedianOfThree() {
+        quickSortMo3.sort(numbers);
+        Assert.assertTrue(SortUtils.sorted(numbers));
+    }
 
     @Test
     public void testHeapSort() {
@@ -70,12 +78,13 @@ public class SortTest {
             System.out.printf("%6d %5d %5d %5d\n", size, bs, is, ss);
         }
         System.out.println("");
-        System.out.println("  Items    HS    QS");
-        System.out.println("------- ----- -----");
+        System.out.println("   Items      HS      QS  QS Mo3");
+        System.out.println("-------- ------- ------- -------");
         for (int size : HIGHER_BENCHMARKS) {
             long hs = benchmark(heapSort, SortUtils.randomIntegerArray(size, 0, size));
             long qs = benchmark(quickSort, SortUtils.randomIntegerArray(size, 0, size));
-            System.out.printf("%7d %5d %5d\n", size, hs, qs);
+            long qsM03 = benchmark(quickSortMo3, SortUtils.randomIntegerArray(size, 0, size));
+            System.out.printf("%8d %7d %7d %7d\n", size, hs, qs, qsM03);
         }
     }
 
