@@ -18,9 +18,11 @@ public class SortUtilsTest {
         final int n = 1_000_000, min = 1, max = 100;
         Integer numbers[] = SortUtils.randomIntegerArray(n, min, max);
         Assert.assertTrue(numbers.length == n);
-        for (int i = 0; i < n; i++) {
-            Assert.assertTrue(numbers[i] >= min && numbers[i] <= max);
+        boolean inRange = true;
+        for (int i = 0; inRange && i < n; i++) {
+            inRange = inRange && numbers[i] >= min && numbers[i] <= max;
         }
+        Assert.assertTrue(inRange);
     }
 
     @Test
@@ -30,7 +32,7 @@ public class SortUtilsTest {
     }
 
     @Test
-    public void testUnorted() {
+    public void testUnsorted() {
         Integer unsorted[] = new Integer[] { 1, 2, 1, 3, 3 };
         Assert.assertFalse(SortUtils.sorted(unsorted));
     }
