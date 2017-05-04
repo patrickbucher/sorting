@@ -1,5 +1,7 @@
 package sorting;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,11 +9,12 @@ import org.junit.Test;
 public class SortTest {
 
     private final static int QUICK_INSERTION_SORT_THRESHOLD = 25;
-    
+
     private final static int TEST_SIZE = 10_000;
 
     private final static int SIMPLE_BENCHMARKS[] = { 1_000, 2_000, 5_000, 10_000, 20_000, 50_000 };
-    private final static int HIGHER_BENCHMARKS[] = { 100_000, 200_000, 500_000, 1_000_000, 2_000_000, 5_000_000, 10_000_000, 20_000_000, 50_000_000 };
+    private final static int HIGHER_BENCHMARKS[] = { 100_000, 200_000, 500_000, 1_000_000, 2_000_000, 5_000_000,
+            10_000_000, 20_000_000, 50_000_000 };
 
     private Integer[] numbers;
 
@@ -22,6 +25,7 @@ public class SortTest {
     private Sort<Integer> quickSortMo3;
     private Sort<Integer> quickInsertionSort;
     private Sort<Integer> heapSort;
+    private Sort<Integer> mergeSort;
 
     @Before
     public void init() {
@@ -33,6 +37,7 @@ public class SortTest {
         quickSortMo3 = new QuickSortMedianOfThree<>();
         quickInsertionSort = new QuickInsertionSort<>(QUICK_INSERTION_SORT_THRESHOLD);
         heapSort = new HeapSort<>();
+        mergeSort = new MergeSort<>();
     }
 
     @Test
@@ -58,7 +63,7 @@ public class SortTest {
         quickSort.sort(numbers);
         Assert.assertTrue(SortUtils.sorted(numbers));
     }
-    
+
     @Test
     public void testQuickSortMedianOfThree() {
         quickSortMo3.sort(numbers);
@@ -70,10 +75,16 @@ public class SortTest {
         quickInsertionSort.sort(numbers);
         Assert.assertTrue(SortUtils.sorted(numbers));
     }
-    
+
     @Test
     public void testHeapSort() {
         heapSort.sort(numbers);
+        Assert.assertTrue(SortUtils.sorted(numbers));
+    }
+
+    @Test
+    public void testMergeSort() {
+        mergeSort.sort(numbers);
         Assert.assertTrue(SortUtils.sorted(numbers));
     }
 
@@ -82,20 +93,30 @@ public class SortTest {
         System.out.println(" Items    BS    IS    SS");
         System.out.println("------ ----- ----- -----");
         for (int size : SIMPLE_BENCHMARKS) {
-            long bs = benchmark(bubbleSort, SortUtils.randomIntegerArray(size, 0, size));
-            long is = benchmark(insertionSort, SortUtils.randomIntegerArray(size, 0, size));
-            long ss = benchmark(selectionSort, SortUtils.randomIntegerArray(size, 0, size));
+            Integer bsItems[] = SortUtils.randomIntegerArray(size, 0, size);
+            Integer isItems[] = Arrays.copyOf(bsItems, bsItems.length - 1);
+            Integer ssItems[] = Arrays.copyOf(bsItems, bsItems.length - 1);
+            long bs = benchmark(bubbleSort, bsItems);
+            long is = benchmark(insertionSort, isItems);
+            long ss = benchmark(selectionSort, ssItems);
             System.out.printf("%6d %5d %5d %5d\n", size, bs, is, ss);
         }
         System.out.println("");
-        System.out.println("   Items      HS      QS  QS Mo3     QIS");
-        System.out.println("-------- ------- ------- ------- -------");
+        System.out.println("   Items      HS      QS  QS Mo3     QIS      MS");
+        System.out.println("-------- ------- ------- ------- ------- -------");
         for (int size : HIGHER_BENCHMARKS) {
-            long hs = benchmark(heapSort, SortUtils.randomIntegerArray(size, 0, size));
-            long qs = benchmark(quickSort, SortUtils.randomIntegerArray(size, 0, size));
-            long qsM03 = benchmark(quickSortMo3, SortUtils.randomIntegerArray(size, 0, size));
-            long qis = benchmark(quickInsertionSort, SortUtils.randomIntegerArray(size, 0, size));
-            System.out.printf("%8d %7d %7d %7d %7d\n", size, hs, qs, qsM03, qis);
+            Integer hItems[] = SortUtils.randomIntegerArray(size, 0, size);
+            Integer qItems[] = Arrays.copyOf(hItems, hItems.length - 1);
+            Integer qMo3Items[] = Arrays.copyOf(hItems, hItems.length - 1);
+            Integer qisItems[] = Arrays.copyOf(hItems, hItems.length - 1);
+            Integer msItems[] = Arrays.copyOf(hItems, hItems.length - 1);
+
+            long hs = benchmark(heapSort, hItems);
+            long qs = benchmark(quickSort, qItems);
+            long qsMo3 = benchmark(quickSortMo3, qMo3Items);
+            long qis = benchmark(quickInsertionSort, qisItems);
+            long ms = benchmark(mergeSort, msItems);
+            System.out.printf("%8d %7d %7d %7d %7d %7d\n", size, hs, qs, qsMo3, qis, ms);
         }
     }
 
