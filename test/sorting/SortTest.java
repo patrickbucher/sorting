@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class SortTest {
 
-    private final static int QUICK_INSERTION_SORT_THRESHOLD = 25;
+    private final static int SIMPLE_SORT_THRESHOLD = 25;
 
     private final static int TEST_SIZE = 10_000;
 
@@ -26,6 +26,7 @@ public class SortTest {
     private Sort<Integer> quickInsertionSort;
     private Sort<Integer> heapSort;
     private Sort<Integer> mergeSort;
+    private Sort<Integer> concurrentMergeSort;
 
     @Before
     public void init() {
@@ -35,9 +36,10 @@ public class SortTest {
         selectionSort = new SelectionSort<>();
         quickSort = new QuickSort<>();
         quickSortMo3 = new QuickSortMedianOfThree<>();
-        quickInsertionSort = new QuickInsertionSort<>(QUICK_INSERTION_SORT_THRESHOLD);
+        quickInsertionSort = new QuickInsertionSort<>(SIMPLE_SORT_THRESHOLD);
         heapSort = new HeapSort<>();
         mergeSort = new MergeSort<>();
+        concurrentMergeSort = new ConcurrentMergeSort<>(SIMPLE_SORT_THRESHOLD);
     }
 
     @Test
@@ -89,6 +91,12 @@ public class SortTest {
     }
 
     @Test
+    public void testConcurrentMergeSort() {
+        concurrentMergeSort.sort(numbers);
+        Assert.assertTrue(SortUtils.sorted(numbers));
+    }
+
+    @Test
     public void benchmarkAlgorithms() {
         System.out.println(" Items    BS    IS    SS");
         System.out.println("------ ----- ----- -----");
@@ -102,21 +110,23 @@ public class SortTest {
             System.out.printf("%6d %5d %5d %5d\n", size, bs, is, ss);
         }
         System.out.println("");
-        System.out.println("   Items      HS      QS  QS Mo3     QIS      MS");
-        System.out.println("-------- ------- ------- ------- ------- -------");
+        System.out.println("   Items      HS      QS  QS Mo3     QIS      MS     CMS");
+        System.out.println("-------- ------- ------- ------- ------- ------- -------");
         for (int size : HIGHER_BENCHMARKS) {
             Integer hItems[] = SortUtils.randomIntegerArray(size, 0, size);
             Integer qItems[] = Arrays.copyOf(hItems, hItems.length - 1);
             Integer qMo3Items[] = Arrays.copyOf(hItems, hItems.length - 1);
             Integer qisItems[] = Arrays.copyOf(hItems, hItems.length - 1);
             Integer msItems[] = Arrays.copyOf(hItems, hItems.length - 1);
+            Integer cmsItems[] = Arrays.copyOf(hItems, hItems.length - 1);
 
             long hs = benchmark(heapSort, hItems);
             long qs = benchmark(quickSort, qItems);
             long qsMo3 = benchmark(quickSortMo3, qMo3Items);
             long qis = benchmark(quickInsertionSort, qisItems);
             long ms = benchmark(mergeSort, msItems);
-            System.out.printf("%8d %7d %7d %7d %7d %7d\n", size, hs, qs, qsMo3, qis, ms);
+            long cms = benchmark(concurrentMergeSort, cmsItems);
+            System.out.printf("%8d %7d %7d %7d %7d %7d %7d\n", size, hs, qs, qsMo3, qis, ms, cms);
         }
     }
 
