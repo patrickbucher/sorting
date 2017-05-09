@@ -3,10 +3,6 @@
 Simple, higher and concurrent sorting algorithms implemented generically in
 Java.
 
-## TODO
-
-- use PartialSort instead of Arrays.sort for small n 
-
 ## Simple Sorting Algorithms
 
 - Selection Sort
