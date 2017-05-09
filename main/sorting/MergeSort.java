@@ -4,7 +4,13 @@ import java.util.Arrays;
 
 public class MergeSort<T extends Comparable<T>> implements Sort<T> {
 
-    private static final int THRESHOLD = 5;
+    private final PartialSort<T> algorithmSmallN;
+    private final int thresholdSmallN;
+    
+    public MergeSort(PartialSort<T> algorithmSmallN, int thresholdSmallN) {
+        this.algorithmSmallN = algorithmSmallN;
+        this.thresholdSmallN = thresholdSmallN;
+    }
     
     @Override
     public void sort(T[] items) {
@@ -12,8 +18,8 @@ public class MergeSort<T extends Comparable<T>> implements Sort<T> {
     }
 
     public void sort(T[] items, int min, int max) {
-        if (max - min + 1 < THRESHOLD) {
-            Arrays.sort(items, min, max + 1);
+        if (max - min + 1 < thresholdSmallN) {
+            algorithmSmallN.sortPartially(items, min, max + 1);
         } else {
             int mid = min + (max - min + 1) / 2;
             sort(items, min, mid);

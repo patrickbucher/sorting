@@ -12,9 +12,9 @@ public class InsertionSort<T extends Comparable<T>> implements Sort<T>, PartialS
     }
 
     @Override
-    public void sortPartially(T[] items, int from, int to) {
-        for (int s = from + 1; s <= to; s++) {
-            for (int i = s; i > from && items[i].compareTo(items[i - 1]) < 0; i--) {
+    public void sortPartially(T[] items, int fromIn, int toEx) {
+        for (int s = fromIn + 1; s < toEx; s++) {
+            for (int i = s; i > fromIn && items[i].compareTo(items[i - 1]) < 0; i--) {
                 SortUtils.swap(items, i, i - 1);
             }
         }
