@@ -38,7 +38,7 @@ public class SortTest {
         selectionSort = new SelectionSort<>();
         quickSort = new QuickSort<>();
         quickSortMo3 = new QuickSortMedianOfThree<>();
-        quickInsertionSort = new QuickInsertionSort<>(SIMPLE_SORT_THRESHOLD);
+        quickInsertionSort = new QuickInsertionSort<>(new InsertionSort<Integer>(), SIMPLE_SORT_THRESHOLD);
         heapSort = new HeapSort<>();
         mergeSort = new MergeSort<>();
         concurrentMergeSort = new ConcurrentMergeSort<>(SIMPLE_SORT_THRESHOLD);
@@ -153,6 +153,15 @@ public class SortTest {
             long cqs = benchmark(concurrentQuickSort, cqsItems);
             System.out.printf("%8d %7d %7d\n", size, cms, cqs);
         }
+    }
+
+    @Test
+    public void testPartialSort() {
+        Integer numbers[] = new Integer[] { 100, 5, 4, 3, 2, 1, -100 };
+        PartialSort<Integer> partialSort = new InsertionSort<>();
+        partialSort.sortPartially(numbers, 1, numbers.length - 2);
+        System.out.println(Arrays.toString(numbers));
+        Assert.assertArrayEquals(new Integer[] { 100, 1, 2, 3, 4, 5, -100 }, numbers);
     }
 
     private long benchmark(Sort<Integer> algorithm, Integer[] numbers) {

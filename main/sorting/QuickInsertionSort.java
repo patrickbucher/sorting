@@ -2,10 +2,12 @@ package sorting;
 
 public class QuickInsertionSort<T extends Comparable<T>> implements Sort<T> {
 
+    private PartialSort<T> simpleAlgorithm;
     private int threshold;
 
-    public QuickInsertionSort(int threshold) {
+    public QuickInsertionSort(PartialSort<T> simpleAlgorithm, int threshold) {
         this.threshold = threshold;
+        this.simpleAlgorithm = simpleAlgorithm;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class QuickInsertionSort<T extends Comparable<T>> implements Sort<T> {
         if (left < up - 1) {
             int size = up - left;
             if (size < threshold) {
-                insertionSort(items, left, up - 1);
+                simpleAlgorithm.sortPartially(items, left, up - 1);
             } else {
                 sort(items, left, up - 1);
             }
@@ -40,19 +42,10 @@ public class QuickInsertionSort<T extends Comparable<T>> implements Sort<T> {
         if (right > up + 1) {
             int size = right - up;
             if (size < threshold) {
-                insertionSort(items, up + 1, right);
+                simpleAlgorithm.sortPartially(items, up + 1, right);
             } else {
                 sort(items, up + 1, right);
             }
         }
     }
-
-    private void insertionSort(T[] items, int from, int to) {
-        for (int s = from + 1; s <= to; s++) {
-            for (int i = s; i > 0 && items[i].compareTo(items[i - 1]) < 0; i--) {
-                SortUtils.swap(items, i, i - 1);
-            }
-        }
-    }
-
 }
